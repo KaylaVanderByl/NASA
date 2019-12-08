@@ -1,0 +1,29 @@
+body{
+font-family: 'Krona One', sans-serif;
+font-size: 300%;
+margin: .6em;
+background: black;
+color:white;
+}
+
+input{
+
+  font-size: 20%;
+}
+
+#hide{
+  display: none;
+}
+#asteriodtext{
+color:blue;
+position: absolute;
+z-index: 100;
+top:20%;
+background: none;
+display: block;
+}
+
+#input{
+  position: absolute;
+  z-index: 1000;
+}
