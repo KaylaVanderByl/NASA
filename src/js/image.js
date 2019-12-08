@@ -13,9 +13,9 @@ const Image = (function() {
   		if (xhr.status === 200) {
   			var resp = JSON.parse( xhr.response );
   			console.log(resp);
-  document.getElementById("title").innerHTML = resp.title;
-  document.getElementById("imagehere").src = resp.url;
-  document.getElementById("description").innerHTML = "Description: " +resp.explanation;
+        document.getElementById("title").innerHTML = resp.title;
+        document.getElementById("imagehere").src = resp.url;
+        document.getElementById("description").innerHTML = "Description: " +resp.explanation;
   		} else{
   			error();
   		}
