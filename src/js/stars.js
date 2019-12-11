@@ -1,5 +1,4 @@
 
-import Stats from '../../lib/stats.js';
 import * as THREE from '../../lib/three.js';
 
 
@@ -45,12 +44,12 @@ import * as THREE from '../../lib/three.js';
 
 
 				];
-				var geometry = new THREE.SphereBufferGeometry( 20, 32, 16 );
+				var geometry = new THREE.SphereBufferGeometry( 15, 42, 16 );
 				for ( var i = 0; i < 2000; i ++ ) {
 					// random order
 					//var index = Math.floor( Math.random() * materials.length );
 					// sort by material / geometry
-					var index = Math.floor( ( i / 1000 ) * materials.length );
+					var index = Math.floor( ( i / 2000 ) * materials.length );
 					var material = materials[ index ];
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.position.x = Math.random() * 10000 - 5000;
@@ -65,10 +64,7 @@ import * as THREE from '../../lib/three.js';
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
-				if ( statsEnabled ) {
-					stats = new Stats();
-					container.appendChild( stats.dom );
-				}
+
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				//
 				window.addEventListener( 'resize', onWindowResize, false );
@@ -89,11 +85,11 @@ import * as THREE from '../../lib/three.js';
 			function animate() {
 				requestAnimationFrame( animate );
 				render();
-				if ( statsEnabled ) stats.update();
+
 			}
 			function render() {
-				camera.position.x += ( mouseX - camera.position.x ) * .05;
-				camera.position.y += ( - mouseY - camera.position.y ) * .05;
+				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
 				camera.lookAt( scene.position );
 				renderer.render( scene, camera );
 			}

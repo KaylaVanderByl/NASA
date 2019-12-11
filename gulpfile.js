@@ -62,7 +62,7 @@ gulp.task('scripts', function() {
             './src/js/*.js'
         ])
         .pipe(webpackStream(webpackConfig), webpack)
-        .pipe(terser())
+        // .pipe(terser())
         .pipe(gulp.dest('./dist/js'))
         .pipe(browserSync.reload({
              stream: true

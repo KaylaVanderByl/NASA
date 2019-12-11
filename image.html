@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>The Parsons Web Project</title>
+  <title>NASA</title>
   <meta name="description" content="The Dummy Page">
   <meta name="author" content="Parsons">
 
@@ -14,14 +14,17 @@
 </head>
 
 <body>
-  <img id="nasa" src="assets/nasa.png" width="100">
-  <button  id="getimage" >Get Image of the Day</button>
+  <a href="index.html"><img id="nasa" src="assets/nasa.png" width="300"></a>
+  <br>
+  <button  id="getimage" >Get Media of the Day</button>
   <h1 id="title"></h1>
-  <img id = "imagehere" src="">
+  <img id="imagehere" src="" />
+  <iframe id="video" width="720" height="415" src=""></iframe>
   <p id= "description"></p>
+  <div  id="home"></div>
 
   <div id="hide">
-
+  <div id="webgl"></div>
     <input type = "text" id ="user" value="date"/>
     <button id = "planetsubmit" >Submit</button>
     <input id = "input"type="text" ><input id = "planetsubmit" type="submit">
@@ -29,6 +32,7 @@
     <div id="planet" ></div>
     <div id="stars"></div>
     <button id="submit">submit</button>
+    <button id="send" ></button>
     <p id="counter" ></p>
     <p id="closest" ></p>
 

@@ -13,29 +13,31 @@
   <script src="lib/OrbitControls.js"></script>
   <script src="lib/OBJLoader.js"></script>
   <script src="lib/GLTFLoader.js"></script>
-  <script src="lib/stats.js"></script>
+
 
   <link rel="stylesheet" href="dist/css/main.css">
 <link href="https://fonts.googleapis.com/css?family=Krona+One&display=swap" rel="stylesheet">
 
 </head>
+<body id="background">
 
-<body>
-
-  <img id="nasa" src="assets/nasa.png" width="100">
-  <a id = "planets" href="aesteroids.html">AESTEROID STATS</a>
-  <a id = "" href="stars.html">EXPLORE THE GALAXY</a>
-  <a id = "image" href="image.html" target="_blank">IMAGE OF THE DAY</a>
-  <a id = "image" href="planets.html" target="_blank">EXPLORE EARTH</a>
+  <a href="index.html"><img id="nasa" src="assets/nasa.png" width="300"></a>
+  <a id = "planets" href="asteroids.html" target="_blank">AESTEROID STATS</a>
+  <a id = "galaxy" href="stars.html" target="_blank">EXPLORE THE GALAXY</a>
+  <a id = "image" href="image.html" target="_blank">MEDIA OF THE DAY</a>
+  <a id = "image" href="planets.html" target="_blank">EARTH TRACKER</a>
+  <a id = "image" href="earth.html" target="_blank">INTERACTIVE GLOBE</a>
+  <div  id="home"></div>
 
   <div id="hide">
-
+<div id="webgl"></div>
     <input type = "text" id ="user" value="date"/>
     <button id = "planetsubmit" >Submit</button>
     <input id = "input"type="text" ><input id = "planetsubmit" type="submit">
     <div id="asteroid"></div>
     <div id="planet" ></div>
     <button id="submit">submit</button>
+    <button id="send" >Get Yesterday's Asteroid Stats</button>
     <div id="stars"></div>
     <button  id="getimage" >Get Image of the Day</button>
     <p id="counter" ></p>

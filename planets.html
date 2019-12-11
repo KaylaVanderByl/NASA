@@ -7,27 +7,32 @@
   <title>NASA</title>
   <meta name="description" content="The Dummy Page">
   <meta name="author" content="Parsons">
-
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="dist/css/main.css">
-<link href="https://fonts.googleapis.com/css?family=Krona+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Krona+One&display=swap" rel="stylesheet">
 
 </head>
 
 <body>
 
-<img id="nasa" src="assets/nasa.png" width="100">
-<p>Type in a date</p>
-<input type = "text" id ="user" value="date"/>
+<a href="index.html"><img id="nasa" src="assets/nasa.png" width="300"></a>
+<br>
+<p>Get an image of the earth on a specific date:</p>
+<input type="date" id="datepicker">
 <button id = "planetsubmit" >Submit</button>
 <div id="planet" ></div>
-<img id = "image" src=""></>
-<div id="webgl"></div>
+<p id="error" ></p>
+<img id = "image" src="">
 
 <div id="hide">
+  <div id="webgl"></div>
   <div id="asteroid"></div>
   <button id="submit">submit</button>
+  <button id="send" >Get Yesterday's Asteroid Stats</button>
   <div id="stars"></div>
-  <button  id="getimage" >Get Image of the Day</button>
+  <button id="getimage" >Get Image of the Day</button>
   <p id="counter" ></p>
   <p id="closest" ></p>
   <h1 id="title"></h1>
@@ -39,7 +44,7 @@
   <script src="lib/three.min.js"></script>
 	<script src="lib/Detector.js"></script>
 	<script src="lib/TrackballControls.js"></script>
-	<script src="lib/earth.js"></script>
+
 <script src="dist/js/scripts.js"></script>
 
 </body>

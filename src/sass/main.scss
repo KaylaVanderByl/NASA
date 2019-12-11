@@ -1,9 +1,10 @@
 body{
 font-family: 'Krona One', sans-serif;
-font-size: 300%;
+font-size: 230%;
 margin: .6em;
-background: black;
+background-color: black;
 color:white;
+text-decoration:none;
 }
 
 input{
@@ -14,11 +15,12 @@ input{
 #hide{
   display: none;
 }
+
 #asteriodtext{
-color:blue;
+color: white;
 position: absolute;
 z-index: 100;
-top:20%;
+top:16%;
 background: none;
 display: block;
 }
@@ -26,4 +28,63 @@ display: block;
 #input{
   position: absolute;
   z-index: 1000;
+}
+
+#background {
+background-image: url("../../assets/astronauts.png");
+background-repeat: no-repeat;
+background-size: cover;
+}
+
+a {
+  text-decoration:none;
+  color: white;
+
+}
+
+
+iframe{
+  border: none;
+
+}
+
+#nasa{
+  margin-top:2%;
+  margin-right:3%;
+  margin-right:2%;
+}
+
+#image:hover{
+  color: grey;
+}
+
+#galaxy{
+  margin-left:3%;
+}
+
+#image{
+  margin-left:3%;
+
+}
+
+#galaxy:hover{
+  color: grey;
+}
+
+#planets:hover{
+  color: grey;
+}
+
+button {
+  background-color: grey;
+  border: none;
+  color: white;
+  padding: 1em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 60%;
+  margin: 4px 2px;
+  font-family: 'Krona One', sans-serif;
+  cursor: pointer;
 }
