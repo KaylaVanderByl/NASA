@@ -1,7 +1,7 @@
 
 console.log('ccxxxx');
 
-
+//importing all js files
 
 import Image from './image.js';
 
@@ -14,5 +14,3 @@ import Stats from '../../lib/stats.js';
 import stars from './stars.js';
 
 import planets from './planets.js';
-
-import earth from './earth.js';

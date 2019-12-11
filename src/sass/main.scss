@@ -1,6 +1,6 @@
 body{
 font-family: 'Krona One', sans-serif;
-font-size: 230%;
+font-size: 300%;
 margin: .6em;
 background-color: black;
 color:white;
@@ -64,7 +64,8 @@ iframe{
 
 #image{
   margin-left:3%;
-
+width: 30%;
+height: auto;
 }
 
 #galaxy:hover{

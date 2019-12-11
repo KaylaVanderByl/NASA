@@ -1,10 +1,12 @@
 import * as THREE from '../../lib/three.js';
 
+//getting today's asteroid statistics using new Date function
 var today = new Date();
 var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   const api = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+date+"&end_date="+date+"&api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68"; //API
   const aesteroid = document.getElementById("submit");
   aesteroid.addEventListener("click", planet);
+  //function to get statistics
   function planet() {
     const url = api;
     const xhr = new XMLHttpRequest();
@@ -13,28 +15,29 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var resp = JSON.parse( xhr.response );
         console.log(resp);
         var totalplusone = resp.element_count;
-        var total = resp.element_count - 1;
-        var first = resp.near_earth_objects;
-        var soc = Object.values(first);
-        var then = soc[0];
-        var now = then[0];
-        var name = now.name;
-        var nopuncname = name.replace(/[()]/g,"");
+        var total = resp.element_count - 1; //counting # of objects/asteroids in near_earth_objects, minus the array they are grouped in
+        var all = resp.near_earth_objects;
+        var first = Object.values(all); //getting all elements in near_earth_objects
+        var firstasteroid = first[0];//getting the first element in near_earth_objects, which is an array named as the date
+        var ast = firstasteroid[0];//getting the first asteroid in the array
+        var name = ast.name; //getting the asteroid name
+        var nopuncname = name.replace(/[()]/g,"");//replacing dashes with slashes for image link
 
-        console.log(now);
+        console.log(ast);
         console.log(total);
-        console.log(now.is_potentially_hazardous_asteroid);
-        document.getElementById("text").innerHTML = "Amount of Aesteroids around Earth today:";
+        console.log(ast.is_potentially_hazardous_asteroid);
+        document.getElementById("text").innerHTML = "Amount of Asteroids around Earth today:";
         document.getElementById("text").style.textDecoration = "underline";
-        document.getElementById("text2").innerHTML = "Closest Aesteroid:";
+        document.getElementById("text2").innerHTML = "Closest Asteroid:";
         document.getElementById("text2").style.textDecoration = "underline";
+        //attaching data to dom elements
         document.getElementById("counter").innerHTML = total;
         document.getElementById("closest").innerHTML = "Name: " + nopuncname;
-        document.getElementById("magnitude").innerHTML = "Magnitude: " + now.absolute_magnitude_h;
-        document.getElementById("diameter").innerHTML = "Max Diameter: " + now.estimated_diameter.miles.estimated_diameter_max;
-        document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + now.is_potentially_hazardous_asteroid;
+        document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
+        document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
+        document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
-        floating(totalplusone);
+        floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
 
       } else{
         error();
@@ -45,10 +48,14 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     xhr.send(null);
 
 }
- //API
+
+function error() {
+  document.getElementById("error").innerHTML = "No media available";
+}
 
   const yest = document.getElementById("send");
   yest.addEventListener("click", planet2);
+  //getting yesterday's date
   var todayTimeStamp = +new Date(); // Unix timestamp in milliseconds
   var oneDayTimeStamp = 1000 * 60 * 60 * 24; // Milliseconds in a day
   var diff = todayTimeStamp - oneDayTimeStamp;
@@ -64,14 +71,14 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         console.log(resp);
         var totalplusone = resp.element_count;
         var total = resp.element_count - 1;
-        var first = resp.near_earth_objects;
-        var soc = Object.values(first);
-        var then = soc[0];
-        var now = then[0];
-        var name = now.name;
+        var all = resp.near_earth_objects;
+        var first = Object.values(all);
+        var firstasteroid = first[0];
+        var ast = firstasteroid[0];
+        var name = ast.name;
         var nopuncname = name.replace(/[()]/g,"");
 
-        console.log(now);
+        console.log(ast);
         console.log(total);
         document.getElementById("text").innerHTML = "Amount of Aesteroids around Earth yesterday:";
         document.getElementById("text").style.textDecoration = "underline";
@@ -79,11 +86,11 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         document.getElementById("text2").style.textDecoration = "underline";
         document.getElementById("counter").innerHTML = total;
         document.getElementById("closest").innerHTML = "Name: " + nopuncname;
-        document.getElementById("magnitude").innerHTML = "Magnitude: " + now.absolute_magnitude_h;
-        document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + now.estimated_diameter.miles.estimated_diameter_max;
-        if (now.is_potentially_hazardous_asteroid === "false"){
+        document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
+        document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
+        if (ast.is_potentially_hazardous_asteroid === "false"){
           document.getElementById("hazard").innerHTML = "Potentially Hazardous: No Threat";
-        } else if (now.is_potentially_hazardous_asteroid == "true") {
+        } else if (ast.is_potentially_hazardous_asteroid == "true") {
           document.getElementById("hazard").innerHTML = "Potentially Hazardous: Possible Threat";
         }
         floating(total);
@@ -96,6 +103,8 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     xhr.send(null);
 }
 
+
+//creting the three js scene
 function floating(aesteroid){
 
 var container;
@@ -109,6 +118,7 @@ var container;
 			init();
 			animate();
 			function init() {
+        //setting up the background and the camera position
 				container = document.getElementById('asteroid');
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 100000 );
 				camera.position.z = 3200;
@@ -129,16 +139,16 @@ var container;
 				}
 
 
-				//
+				//rendering the scene
 				renderer = new THREE.WebGLRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
-				//
+
 				window.addEventListener( 'resize', onWindowResize, false );
 
       }
-
+      //setting the scene size
 			function onWindowResize() {
 				windowHalfX = window.innerWidth / 2;
 				windowHalfY = window.innerHeight / 2;
@@ -150,11 +160,12 @@ var container;
 				mouseX = ( event.clientX - windowHalfX ) * 10;
 				mouseY = ( event.clientY - windowHalfY ) * 10;
 			}
-			//
+
 			function animate() {
 				requestAnimationFrame( animate );
 				render();
 			}
+      //the spheres' movements
 			function render() {
 				var timer = 0.0001 * Date.now();
 				for ( var i = 0, il = spheres.length; i < il; i ++ ) {

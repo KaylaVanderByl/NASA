@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3113,11 +3113,13 @@ var THREE = _interopRequireWildcard(_three);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+//getting today's asteroid statistics using new Date function
 var today = new Date();
 var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 var api = "https://api.nasa.gov/neo/rest/v1/feed?start_date=" + date + "&end_date=" + date + "&api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68"; //API
 var aesteroid = document.getElementById("submit");
 aesteroid.addEventListener("click", planet);
+//function to get statistics
 function planet() {
   var url = api;
   var xhr = new XMLHttpRequest();
@@ -3126,28 +3128,29 @@ function planet() {
       var resp = JSON.parse(xhr.response);
       console.log(resp);
       var totalplusone = resp.element_count;
-      var total = resp.element_count - 1;
-      var first = resp.near_earth_objects;
-      var soc = Object.values(first);
-      var then = soc[0];
-      var now = then[0];
-      var name = now.name;
-      var nopuncname = name.replace(/[()]/g, "");
+      var total = resp.element_count - 1; //counting # of objects/asteroids in near_earth_objects, minus the array they are grouped in
+      var all = resp.near_earth_objects;
+      var first = Object.values(all); //getting all elements in near_earth_objects
+      var firstasteroid = first[0]; //getting the first element in near_earth_objects, which is an array named as the date
+      var ast = firstasteroid[0]; //getting the first asteroid in the array
+      var name = ast.name; //getting the asteroid name
+      var nopuncname = name.replace(/[()]/g, ""); //replacing dashes with slashes for image link
 
-      console.log(now);
+      console.log(ast);
       console.log(total);
-      console.log(now.is_potentially_hazardous_asteroid);
-      document.getElementById("text").innerHTML = "Amount of Aesteroids around Earth today:";
+      console.log(ast.is_potentially_hazardous_asteroid);
+      document.getElementById("text").innerHTML = "Amount of Asteroids around Earth today:";
       document.getElementById("text").style.textDecoration = "underline";
-      document.getElementById("text2").innerHTML = "Closest Aesteroid:";
+      document.getElementById("text2").innerHTML = "Closest Asteroid:";
       document.getElementById("text2").style.textDecoration = "underline";
+      //attaching data to dom elements
       document.getElementById("counter").innerHTML = total;
       document.getElementById("closest").innerHTML = "Name: " + nopuncname;
-      document.getElementById("magnitude").innerHTML = "Magnitude: " + now.absolute_magnitude_h;
-      document.getElementById("diameter").innerHTML = "Max Diameter: " + now.estimated_diameter.miles.estimated_diameter_max;
-      document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + now.is_potentially_hazardous_asteroid;
+      document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
+      document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
+      document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
-      floating(totalplusone);
+      floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
     } else {
       error();
     }
@@ -3156,10 +3159,14 @@ function planet() {
   xhr.open("GET", url, true);
   xhr.send(null);
 }
-//API
+
+function error() {
+  document.getElementById("error").innerHTML = "No media available";
+}
 
 var yest = document.getElementById("send");
 yest.addEventListener("click", planet2);
+//getting yesterday's dates
 var todayTimeStamp = +new Date(); // Unix timestamp in milliseconds
 var oneDayTimeStamp = 1000 * 60 * 60 * 24; // Milliseconds in a day
 var diff = todayTimeStamp - oneDayTimeStamp;
@@ -3175,14 +3182,14 @@ function planet2() {
       console.log(resp);
       var totalplusone = resp.element_count;
       var total = resp.element_count - 1;
-      var first = resp.near_earth_objects;
-      var soc = Object.values(first);
-      var then = soc[0];
-      var now = then[0];
-      var name = now.name;
+      var all = resp.near_earth_objects;
+      var first = Object.values(all);
+      var firstasteroid = first[0];
+      var ast = firstasteroid[0];
+      var name = ast.name;
       var nopuncname = name.replace(/[()]/g, "");
 
-      console.log(now);
+      console.log(ast);
       console.log(total);
       document.getElementById("text").innerHTML = "Amount of Aesteroids around Earth yesterday:";
       document.getElementById("text").style.textDecoration = "underline";
@@ -3190,11 +3197,11 @@ function planet2() {
       document.getElementById("text2").style.textDecoration = "underline";
       document.getElementById("counter").innerHTML = total;
       document.getElementById("closest").innerHTML = "Name: " + nopuncname;
-      document.getElementById("magnitude").innerHTML = "Magnitude: " + now.absolute_magnitude_h;
-      document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + now.estimated_diameter.miles.estimated_diameter_max;
-      if (now.is_potentially_hazardous_asteroid === "false") {
+      document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
+      document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
+      if (ast.is_potentially_hazardous_asteroid === "false") {
         document.getElementById("hazard").innerHTML = "Potentially Hazardous: No Threat";
-      } else if (now.is_potentially_hazardous_asteroid == "true") {
+      } else if (ast.is_potentially_hazardous_asteroid == "true") {
         document.getElementById("hazard").innerHTML = "Potentially Hazardous: Possible Threat";
       }
       floating(total);
@@ -3206,6 +3213,7 @@ function planet2() {
   xhr.send(null);
 }
 
+//creting the three js scene
 function floating(aesteroid) {
 
   var container;
@@ -3219,6 +3227,7 @@ function floating(aesteroid) {
   init();
   animate();
   function init() {
+    //setting up the background and the camera position
     container = document.getElementById('asteroid');
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
     camera.position.z = 3200;
@@ -3236,15 +3245,15 @@ function floating(aesteroid) {
       spheres.push(mesh);
     }
 
-    //
+    //rendering the scene
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
-    //
+
     window.addEventListener('resize', onWindowResize, false);
   }
-
+  //setting the scene size
   function onWindowResize() {
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
@@ -3256,11 +3265,12 @@ function floating(aesteroid) {
     mouseX = (event.clientX - windowHalfX) * 10;
     mouseY = (event.clientY - windowHalfY) * 10;
   }
-  //
+
   function animate() {
     requestAnimationFrame(animate);
     render();
   }
+  //the spheres' movements
   function render() {
     var timer = 0.0001 * Date.now();
     for (var i = 0, il = spheres.length; i < il; i++) {
@@ -3282,99 +3292,11 @@ function floating(aesteroid) {
 "use strict";
 
 
-// Created by Bjorn Sandvik - thematicmapping.org
-(function () {
-
-    var webglEl = document.getElementById('webgl');
-
-    if (!Detector.webgl) {
-        Detector.addGetWebGLMessage(webglEl);
-        return;
-    }
-
-    var width = window.innerWidth,
-        height = window.innerHeight;
-
-    // Earth params
-    var radius = 0.5,
-        segments = 32,
-        rotation = 6;
-
-    var scene = new THREE.Scene();
-
-    var camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 1000);
-    camera.position.z = 1.5;
-
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
-
-    scene.add(new THREE.AmbientLight(0x333333));
-
-    var light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 3, 5);
-    scene.add(light);
-
-    var sphere = createSphere(radius, segments);
-    sphere.rotation.y = rotation;
-    scene.add(sphere);
-
-    var clouds = createClouds(radius, segments);
-    clouds.rotation.y = rotation;
-    scene.add(clouds);
-
-    var stars = createStars(90, 64);
-    scene.add(stars);
-
-    var controls = new THREE.TrackballControls(camera);
-
-    webglEl.appendChild(renderer.domElement);
-
-    render();
-
-    function render() {
-        controls.update();
-        sphere.rotation.y += 0.0005;
-        clouds.rotation.y += 0.0005;
-        requestAnimationFrame(render);
-        renderer.render(scene, camera);
-    }
-
-    function createSphere(radius, segments) {
-        return new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), new THREE.MeshPhongMaterial({
-            map: THREE.ImageUtils.loadTexture('../../assets/2_no_clouds_4k.jpg'),
-            bumpMap: THREE.ImageUtils.loadTexture('../../assets/elev_bump_4k.jpg'),
-            bumpScale: 0.005,
-            specularMap: THREE.ImageUtils.loadTexture('../../assets/water_4k.png'),
-            specular: new THREE.Color('grey')
-        }));
-    }
-
-    function createClouds(radius, segments) {
-        return new THREE.Mesh(new THREE.SphereGeometry(radius + 0.003, segments, segments), new THREE.MeshPhongMaterial({
-            map: THREE.ImageUtils.loadTexture('../../assets/fair_clouds_4k.png'),
-            transparent: true
-        }));
-    }
-
-    function createStars(radius, segments) {
-        return new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture('../../assets/galaxy_starfield.png'),
-            side: THREE.BackSide
-        }));
-    }
-})();
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var api = "https://api.nasa.gov/planetary/apod?api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68"; //API
+//calling the api
+var api = "https://api.nasa.gov/planetary/apod?api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68";
 var imageofday = document.getElementById("getimage");
 imageofday.addEventListener("click", image);
-
+//function to get media of the day
 function image() {
   var url = api;
   var xhr = new XMLHttpRequest();
@@ -3382,15 +3304,16 @@ function image() {
     if (xhr.status === 200) {
       var resp = JSON.parse(xhr.response);
       console.log(resp);
-      document.getElementById("title").innerHTML = resp.title;
+      document.getElementById("title").innerHTML = resp.title; //image title
+      document.getElementById("description").innerHTML = "Description: " + resp.explanation; //image description
+      //checking if media is either video or image
       if (resp.media_type == "video") {
         document.getElementById("imagehere").style.display = "none";
         document.getElementById("video").src = resp.url;
       } else {
         document.getElementById("imagehere").src = resp.url;
+        document.getElementById("video").style.display = "none";
       }
-      document.getElementById("imagehere").src = resp.url;
-      document.getElementById("description").innerHTML = "Description: " + resp.explanation;
     } else {
       error();
     }
@@ -3399,8 +3322,12 @@ function image() {
   xhr.send(null);
 }
 
+function error() {
+  document.getElementById("error").innerHTML = "No media available";
+}
+
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3422,6 +3349,7 @@ var windowHalfY = window.innerHeight / 2;
 init();
 animate();
 function init() {
+	//setting up the scene and camera
 	container = document.getElementById('stars');
 	camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 20000);
 	camera.position.z = 3200;
@@ -3429,6 +3357,7 @@ function init() {
 	scene.fog = new THREE.Fog(0x000000, 1, 20000);
 	var light = new THREE.PointLight(0xffffff);
 	scene.add(light);
+	//loading planet textures for the spheres
 	var texture2 = new THREE.TextureLoader().load('../../assets/space2.jpg');
 	var texture3 = new THREE.TextureLoader().load('../../assets/earth.jpg');
 	var texture4 = new THREE.TextureLoader().load('../../assets/mars.jpg');
@@ -3439,11 +3368,12 @@ function init() {
 	var texture9 = new THREE.TextureLoader().load('../../assets/venusat.jpg');
 	var texture10 = new THREE.TextureLoader().load('../../assets/jupiter.jpg');
 	var texture11 = new THREE.TextureLoader().load('../../assets/clouds.jpg');
+	//turning textures into meshes/maps for the spheres
 	var materials = [new THREE.MeshBasicMaterial({ map: texture11 }), new THREE.MeshBasicMaterial({ map: texture2 }), new THREE.MeshBasicMaterial({ map: texture3 }), new THREE.MeshBasicMaterial({ map: texture4 }), new THREE.MeshBasicMaterial({ map: texture5 }), new THREE.MeshBasicMaterial({ map: texture6 }), new THREE.MeshBasicMaterial({ map: texture7 }), new THREE.MeshBasicMaterial({ map: texture8 }), new THREE.MeshBasicMaterial({ map: texture9 }), new THREE.MeshBasicMaterial({ map: texture10 }), new THREE.MeshBasicMaterial({ map: texture11 })];
+	//creating the spheres, and setting amount of spheres
 	var geometry = new THREE.SphereBufferGeometry(15, 42, 16);
 	for (var i = 0; i < 2000; i++) {
 		// random order
-		//var index = Math.floor( Math.random() * materials.length );
 		// sort by material / geometry
 		var index = Math.floor(i / 2000 * materials.length);
 		var material = materials[index];
@@ -3451,20 +3381,21 @@ function init() {
 		mesh.position.x = Math.random() * 10000 - 5000;
 		mesh.position.y = Math.random() * 10000 - 5000;
 		mesh.position.z = Math.random() * 10000 - 5000;
-		//mesh.rotation.x = Math.random() * 360 * ( Math.PI / 180 );
 		mesh.rotation.y = Math.random() * 2 * Math.PI;
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 1;
 		scene.add(mesh);
 	}
+	//renderer
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	container.appendChild(renderer.domElement);
 
 	document.addEventListener('mousemove', onDocumentMouseMove, false);
-	//
+
 	window.addEventListener('resize', onWindowResize, false);
 }
+//canvas size
 function onWindowResize() {
 	windowHalfX = window.innerWidth / 2;
 	windowHalfY = window.innerHeight / 2;
@@ -3472,16 +3403,17 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
+//mouse interaction
 function onDocumentMouseMove(event) {
 	mouseX = (event.clientX - windowHalfX) * 10;
 	mouseY = (event.clientY - windowHalfY) * 10;
 }
-//
+
 function animate() {
 	requestAnimationFrame(animate);
 	render();
 }
+
 function render() {
 	camera.position.x += (mouseX - camera.position.x) * 0.05;
 	camera.position.y += (-mouseY - camera.position.y) * 0.05;
@@ -3490,23 +3422,24 @@ function render() {
 }
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-//
+//jquery date selector
 $(function () {
   $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd', minDate: '2015-10-31', maxDate: '2019-06-27' }).val();
-}); //
+});
 
 var date = document.getElementById("datepicker");
 var planet = document.getElementById("planetsubmit");
 planet.addEventListener("click", image);
 
+//function calling image api
 function image() {
-  console.log(date.value);
+  //combining api with the date user selected
   var api = "https://epic.gsfc.nasa.gov/api/enhanced/date/" + date.value;
   var url = api;
   var xhr = new XMLHttpRequest();
@@ -3514,11 +3447,12 @@ function image() {
     if (xhr.status === 200) {
       var resp = JSON.parse(xhr.response);
       console.log(resp);
-      var link = resp[0].image;
+      var link = resp[0].image; //getting most recent image of the day
       console.log(link);
-      var newdate = date.value;
-      var imagedate = newdate.replace(/-/g, "/");
+      var newdate = date.value; //getting the date the user selected
+      var imagedate = newdate.replace(/-/g, "/"); //replacing dash with a slash for image link
       console.log(imagedate);
+      //creating the image link
       document.getElementById("image").src = "https://epic.gsfc.nasa.gov/archive/enhanced/" + imagedate + "/png/" + link + ".png";
     } else {
       error();
@@ -3532,25 +3466,24 @@ function error() {
 }
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
 __webpack_require__(2);
-__webpack_require__(3);
-__webpack_require__(7);
-__webpack_require__(5);
-module.exports = __webpack_require__(4);
+__webpack_require__(6);
+__webpack_require__(4);
+module.exports = __webpack_require__(3);
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _image = __webpack_require__(3);
+var _image = __webpack_require__(2);
 
 var _image2 = _interopRequireDefault(_image);
 
@@ -3562,21 +3495,17 @@ var _three = __webpack_require__(0);
 
 var THREE = _interopRequireWildcard(_three);
 
-var _stats = __webpack_require__(8);
+var _stats = __webpack_require__(7);
 
 var _stats2 = _interopRequireDefault(_stats);
 
-var _stars = __webpack_require__(4);
+var _stars = __webpack_require__(3);
 
 var _stars2 = _interopRequireDefault(_stars);
 
-var _planets = __webpack_require__(5);
+var _planets = __webpack_require__(4);
 
 var _planets2 = _interopRequireDefault(_planets);
-
-var _earth = __webpack_require__(2);
-
-var _earth2 = _interopRequireDefault(_earth);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -3584,8 +3513,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 console.log('ccxxxx');
 
+//importing all js files
+
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
