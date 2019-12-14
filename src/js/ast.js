@@ -1,8 +1,8 @@
 import * as THREE from '../../lib/three.js';
 
 //getting today's asteroid statistics using new Date function
-var today = new Date();
-var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   const api = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+date+"&end_date="+date+"&api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68"; //API
   const aesteroid = document.getElementById("submit");
   aesteroid.addEventListener("click", planet);
@@ -21,7 +21,7 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var firstasteroid = first[0];//getting the first element in near_earth_objects, which is an array named as the date
         var ast = firstasteroid[0];//getting the first asteroid in the array
         var name = ast.name; //getting the asteroid name
-        var nopuncname = name.replace(/[()]/g,"");//replacing dashes with slashes for image link
+        var nopuncname = name.replace(/[()]/g,""); //removing brackets from name
 
         console.log(ast);
         console.log(total);
@@ -38,6 +38,7 @@ var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
         floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
+        document.getElementById("asteroid2").style.display = "none";
 
       } else{
         error();
@@ -61,7 +62,7 @@ function error() {
   var diff = todayTimeStamp - oneDayTimeStamp;
   var yesterdayDate = new Date(diff);
   var yesterdayString = yesterdayDate.getFullYear() + '-' + (yesterdayDate.getMonth() + 1) + '-' + yesterdayDate.getDate();
-    const api2 = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+yesterdayString+"&end_date="+yesterdayString+"&api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68";
+  const api2 = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+yesterdayString+"&end_date="+yesterdayString+"&api_key=KQ8KfeadbmJD8EnheIIdRNHrTJS8IkgCv4if8H68";
   function planet2(){
     const url = api2;
     const xhr = new XMLHttpRequest();
@@ -88,12 +89,11 @@ function error() {
         document.getElementById("closest").innerHTML = "Name: " + nopuncname;
         document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
         document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
-        if (ast.is_potentially_hazardous_asteroid === "false"){
-          document.getElementById("hazard").innerHTML = "Potentially Hazardous: No Threat";
-        } else if (ast.is_potentially_hazardous_asteroid == "true") {
-          document.getElementById("hazard").innerHTML = "Potentially Hazardous: Possible Threat";
-        }
-        floating(total);
+        document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
+
+        floating2(total);
+
+
 
       } else{
         error();
@@ -104,10 +104,10 @@ function error() {
 }
 
 
-//creting the three js scene
+//creating the three js scene
 function floating(aesteroid){
-
-var container;
+  // Set up the scene, camera, and renderer as global variables.
+      var container;
 			var camera, scene, renderer;
 			var spheres = [];
 			var mouseX = 0;
@@ -117,6 +117,7 @@ var container;
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			init();
 			animate();
+      //setting up the scene
 			function init() {
         //setting up the background and the camera position
 				container = document.getElementById('asteroid');
@@ -144,11 +145,10 @@ var container;
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
-
 				window.addEventListener( 'resize', onWindowResize, false );
 
       }
-      //setting the scene size
+
 			function onWindowResize() {
 				windowHalfX = window.innerWidth / 2;
 				windowHalfY = window.innerHeight / 2;
@@ -165,7 +165,7 @@ var container;
 				requestAnimationFrame( animate );
 				render();
 			}
-      //the spheres' movements
+
 			function render() {
 				var timer = 0.0001 * Date.now();
 				for ( var i = 0, il = spheres.length; i < il; i ++ ) {

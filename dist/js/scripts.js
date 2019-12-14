@@ -3134,7 +3134,7 @@ function planet() {
       var firstasteroid = first[0]; //getting the first element in near_earth_objects, which is an array named as the date
       var ast = firstasteroid[0]; //getting the first asteroid in the array
       var name = ast.name; //getting the asteroid name
-      var nopuncname = name.replace(/[()]/g, ""); //replacing dashes with slashes for image link
+      var nopuncname = name.replace(/[()]/g, ""); //removing brackets from name
 
       console.log(ast);
       console.log(total);
@@ -3151,6 +3151,7 @@ function planet() {
       document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
       floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
+      document.getElementById("asteroid2").style.display = "none";
     } else {
       error();
     }
@@ -3166,7 +3167,7 @@ function error() {
 
 var yest = document.getElementById("send");
 yest.addEventListener("click", planet2);
-//getting yesterday's dates
+//getting yesterday's date
 var todayTimeStamp = +new Date(); // Unix timestamp in milliseconds
 var oneDayTimeStamp = 1000 * 60 * 60 * 24; // Milliseconds in a day
 var diff = todayTimeStamp - oneDayTimeStamp;
@@ -3199,12 +3200,9 @@ function planet2() {
       document.getElementById("closest").innerHTML = "Name: " + nopuncname;
       document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
       document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
-      if (ast.is_potentially_hazardous_asteroid === "false") {
-        document.getElementById("hazard").innerHTML = "Potentially Hazardous: No Threat";
-      } else if (ast.is_potentially_hazardous_asteroid == "true") {
-        document.getElementById("hazard").innerHTML = "Potentially Hazardous: Possible Threat";
-      }
-      floating(total);
+      document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
+
+      floating2(total);
     } else {
       error();
     }
@@ -3213,9 +3211,9 @@ function planet2() {
   xhr.send(null);
 }
 
-//creting the three js scene
+//creating the three js scene
 function floating(aesteroid) {
-
+  // Set up the scene, camera, and renderer as global variables.
   var container;
   var camera, scene, renderer;
   var spheres = [];
@@ -3226,6 +3224,7 @@ function floating(aesteroid) {
   document.addEventListener('mousemove', onDocumentMouseMove, false);
   init();
   animate();
+  //setting up the scene
   function init() {
     //setting up the background and the camera position
     container = document.getElementById('asteroid');
@@ -3250,10 +3249,9 @@ function floating(aesteroid) {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
-
     window.addEventListener('resize', onWindowResize, false);
   }
-  //setting the scene size
+
   function onWindowResize() {
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
@@ -3270,7 +3268,7 @@ function floating(aesteroid) {
     requestAnimationFrame(animate);
     render();
   }
-  //the spheres' movements
+
   function render() {
     var timer = 0.0001 * Date.now();
     for (var i = 0, il = spheres.length; i < il; i++) {
