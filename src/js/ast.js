@@ -38,7 +38,7 @@ import * as THREE from '../../lib/three.js';
         document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
         floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
-        document.getElementById("asteroid2").style.display = "none";
+
 
       } else{
         error();
@@ -51,7 +51,7 @@ import * as THREE from '../../lib/three.js';
 }
 
 function error() {
-  document.getElementById("error").innerHTML = "No media available";
+  document.getElementById("error").innerHTML = "No stats available";
 }
 
   const yest = document.getElementById("send");
@@ -90,10 +90,7 @@ function error() {
         document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
         document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
         document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
-
-        floating2(total);
-
-
+        floating(total);
 
       } else{
         error();
@@ -104,8 +101,10 @@ function error() {
 }
 
 
+
+
 //creating the three js scene
-function floating(aesteroid){
+
   // Set up the scene, camera, and renderer as global variables.
       var container;
 			var camera, scene, renderer;
@@ -127,19 +126,6 @@ function floating(aesteroid){
 				scene.background = new THREE.CubeTextureLoader()
 					.setPath( '../../assets/' )
 					.load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
-				var geometry = new THREE.SphereBufferGeometry( 200, 32, 16 );
-				var material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: scene.background } );
-				for ( var i = 0; i < aesteroid ; i ++ ) {
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.position.x = Math.random() * 10000 - 5000;
-					mesh.position.y = Math.random() * 10000 - 5000;
-					mesh.position.z = Math.random() * 10000 - 5000;
-					mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
-					scene.add( mesh );
-					spheres.push( mesh );
-				}
-
-
 				//rendering the scene
 				renderer = new THREE.WebGLRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -178,4 +164,22 @@ function floating(aesteroid){
 				camera.lookAt( scene.position );
 				renderer.render( scene, camera );
 			}
-    }
+
+    function floating(aesteroid){
+        var geometry = new THREE.SphereBufferGeometry( 200, 32, 16 );
+        var material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: scene.background } );
+        for ( var i = 0; i < aesteroid ; i ++ ) {
+          var mesh = new THREE.Mesh( geometry, material );
+          mesh.position.x = Math.random() * 10000 - 5000;
+          mesh.position.y = Math.random() * 10000 - 5000;
+          mesh.position.z = Math.random() * 10000 - 5000;
+          mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
+          scene.add( mesh );
+          spheres.push( mesh );
+        }
+      }
+      const clear = document.getElementById("clear");
+      clear.addEventListener("click", clearing);
+      function clearing(){
+      window.location.reload();
+      }

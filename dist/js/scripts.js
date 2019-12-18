@@ -3151,7 +3151,7 @@ function planet() {
       document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
 
       floating(total); //calling the three js canvas: # of spheres in canvas = # of asteroids
-      document.getElementById("asteroid2").style.display = "none";
+
     } else {
       error();
     }
@@ -3162,7 +3162,7 @@ function planet() {
 }
 
 function error() {
-  document.getElementById("error").innerHTML = "No media available";
+  document.getElementById("error").innerHTML = "No stats available";
 }
 
 var yest = document.getElementById("send");
@@ -3201,8 +3201,7 @@ function planet2() {
       document.getElementById("magnitude").innerHTML = "Magnitude: " + ast.absolute_magnitude_h;
       document.getElementById("diameter").innerHTML = "Max Diameter(miles): " + ast.estimated_diameter.miles.estimated_diameter_max;
       document.getElementById("hazard").innerHTML = "Potentially Hazardous: " + ast.is_potentially_hazardous_asteroid;
-
-      floating2(total);
+      floating(total);
     } else {
       error();
     }
@@ -3212,75 +3211,81 @@ function planet2() {
 }
 
 //creating the three js scene
+
+// Set up the scene, camera, and renderer as global variables.
+var container;
+var camera, scene, renderer;
+var spheres = [];
+var mouseX = 0;
+var mouseY = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+document.addEventListener('mousemove', onDocumentMouseMove, false);
+init();
+animate();
+//setting up the scene
+function init() {
+  //setting up the background and the camera position
+  container = document.getElementById('asteroid');
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
+  camera.position.z = 3200;
+  scene = new THREE.Scene();
+  scene.background = new THREE.CubeTextureLoader().setPath('../../assets/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
+  //rendering the scene
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+  window.addEventListener('resize', onWindowResize, false);
+}
+
+function onWindowResize() {
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+function onDocumentMouseMove(event) {
+  mouseX = (event.clientX - windowHalfX) * 10;
+  mouseY = (event.clientY - windowHalfY) * 10;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
+
+function render() {
+  var timer = 0.0001 * Date.now();
+  for (var i = 0, il = spheres.length; i < il; i++) {
+    var sphere = spheres[i];
+    sphere.position.x = 5000 * Math.cos(timer + i);
+    sphere.position.y = 5000 * Math.sin(timer + i * 1.1);
+  }
+  camera.position.x += (mouseX - camera.position.x) * 0.05;
+  camera.position.y += (-mouseY - camera.position.y) * 0.05;
+  camera.lookAt(scene.position);
+  renderer.render(scene, camera);
+}
+
 function floating(aesteroid) {
-  // Set up the scene, camera, and renderer as global variables.
-  var container;
-  var camera, scene, renderer;
-  var spheres = [];
-  var mouseX = 0;
-  var mouseY = 0;
-  var windowHalfX = window.innerWidth / 2;
-  var windowHalfY = window.innerHeight / 2;
-  document.addEventListener('mousemove', onDocumentMouseMove, false);
-  init();
-  animate();
-  //setting up the scene
-  function init() {
-    //setting up the background and the camera position
-    container = document.getElementById('asteroid');
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 100000);
-    camera.position.z = 3200;
-    scene = new THREE.Scene();
-    scene.background = new THREE.CubeTextureLoader().setPath('../../assets/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
-    var geometry = new THREE.SphereBufferGeometry(200, 32, 16);
-    var material = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: scene.background });
-    for (var i = 0; i < aesteroid; i++) {
-      var mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = Math.random() * 10000 - 5000;
-      mesh.position.y = Math.random() * 10000 - 5000;
-      mesh.position.z = Math.random() * 10000 - 5000;
-      mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
-      scene.add(mesh);
-      spheres.push(mesh);
-    }
-
-    //rendering the scene
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-    window.addEventListener('resize', onWindowResize, false);
+  var geometry = new THREE.SphereBufferGeometry(200, 32, 16);
+  var material = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: scene.background });
+  for (var i = 0; i < aesteroid; i++) {
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.position.x = Math.random() * 10000 - 5000;
+    mesh.position.y = Math.random() * 10000 - 5000;
+    mesh.position.z = Math.random() * 10000 - 5000;
+    mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
+    scene.add(mesh);
+    spheres.push(mesh);
   }
-
-  function onWindowResize() {
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-  function onDocumentMouseMove(event) {
-    mouseX = (event.clientX - windowHalfX) * 10;
-    mouseY = (event.clientY - windowHalfY) * 10;
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    render();
-  }
-
-  function render() {
-    var timer = 0.0001 * Date.now();
-    for (var i = 0, il = spheres.length; i < il; i++) {
-      var sphere = spheres[i];
-      sphere.position.x = 5000 * Math.cos(timer + i);
-      sphere.position.y = 5000 * Math.sin(timer + i * 1.1);
-    }
-    camera.position.x += (mouseX - camera.position.x) * 0.05;
-    camera.position.y += (-mouseY - camera.position.y) * 0.05;
-    camera.lookAt(scene.position);
-    renderer.render(scene, camera);
-  }
+}
+var clear = document.getElementById("clear");
+clear.addEventListener("click", clearing);
+function clearing() {
+  window.location.reload();
 }
 
 /***/ }),
