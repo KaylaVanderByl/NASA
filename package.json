@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "popper.js": "^1.16.0",
-    "three": "^0.111.0"
+    "three": "^0.137.0"
   }
 }
